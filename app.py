@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 import re
 import nltk
@@ -6,27 +5,31 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 import os
-from joblib import load  # For loading model/vectorizer
+from joblib import load
 
-# Create a local nltk_data folder inside your app
 nltk_data_dir = os.path.join(os.path.dirname(__file__), "nltk_data")
 os.makedirs(nltk_data_dir, exist_ok=True)
 
-# Download required NLTK data to that folder
-nltk.download('punkt', download_dir=nltk_data_dir)
-nltk.download('stopwords', download_dir=nltk_data_dir)
-
-# Tell NLTK to use that folder
+# Append the folder to NLTK's search path **before using any NLTK functions**
 nltk.data.path.append(nltk_data_dir)
+
+# Download required NLTK data if not already present
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt', download_dir=nltk_data_dir)
+
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords', download_dir=nltk_data_dir)
 
 stop_words = set(stopwords.words('english'))
 stemmer = PorterStemmer()
 
-# --- Load trained model and vectorizer ---
 vectorizer = load('Model/vectorizer.joblib')
 mnb = load('Model/model.joblib')
 
-# --- Preprocessing function ---
 def preprocess(text):
     text = text.lower()  # lowercase
     text = re.sub(r'<[^>]+>', '', text)  # remove HTML
@@ -35,7 +38,6 @@ def preprocess(text):
     words = [stemmer.stem(w) for w in words if w not in stop_words]  # remove stopwords + stem
     return ' '.join(words)
 
-# --- Streamlit UI ---
 st.title("Sentiment Classifier")
 st.write("Enter a sentence & get its sentiment prediction.")
 st.write("This project was initially trained with movie reviews, but it can also be used to predict sentiments of almost any type of statements.")
@@ -47,7 +49,7 @@ if st.button("Predict Sentiment"):
         st.warning("Please enter a review to predict!")
     else:
         clean_input = preprocess(user_input)
-        review_vec = vectorizer.transform([clean_input])  # transform the input
+        review_vec = vectorizer.transform([clean_input])
         prediction = mnb.predict(review_vec)
         
         if prediction[0] == 1:

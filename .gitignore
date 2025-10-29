@@ -27,7 +27,6 @@ var/
 *.egg
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
 *.manifest
 *.spec
 
@@ -53,10 +52,8 @@ cover/
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints
 
-# PyCharm
+# IDEs
 .idea/
-
-# VS Code
 .vscode/
 
 # Streamlit
@@ -68,18 +65,19 @@ Data/
 # Logs
 *.log
 
-# Model checkpoints (optional, if you save models)
+# Model checkpoints
 *.h5
 *.hdf5
 *.pt
 *.pth
 *.ckpt
-*.joblib
 *.pkl
+*.joblib
+!Model/*.joblib
 
 # OS generated files
 .DS_Store
 Thumbs.db
 
-# Ignore secrets
+# Secrets
 .env

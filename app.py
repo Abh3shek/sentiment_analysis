@@ -5,11 +5,19 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
+import os
 from joblib import load  # For loading model/vectorizer
 
-# --- NLTK setup ---
-nltk.download('punkt')
-nltk.download('stopwords')
+# Create a local nltk_data folder inside your app
+nltk_data_dir = os.path.join(os.path.dirname(__file__), "nltk_data")
+os.makedirs(nltk_data_dir, exist_ok=True)
+
+# Download required NLTK data to that folder
+nltk.download('punkt', download_dir=nltk_data_dir)
+nltk.download('stopwords', download_dir=nltk_data_dir)
+
+# Tell NLTK to use that folder
+nltk.data.path.append(nltk_data_dir)
 
 stop_words = set(stopwords.words('english'))
 stemmer = PorterStemmer()

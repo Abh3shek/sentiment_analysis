@@ -12,12 +12,18 @@ nltk_data_dir = os.path.join(os.path.dirname(__file__), "nltk_data")
 os.makedirs(nltk_data_dir, exist_ok=True)
 nltk.data.path.append(nltk_data_dir)
 
-# Download required NLTK packages if not already present
-for pkg in ["punkt", "stopwords"]:
+# Download required packages if not already present
+for pkg in ["punkt", "stopwords", "punkt_tab"]:
     try:
-        nltk.data.find(f"{'tokenizers' if pkg=='punkt' else 'corpora'}/{pkg}")
+        if pkg == "punkt":
+            nltk.data.find("tokenizers/punkt")
+        elif pkg == "stopwords":
+            nltk.data.find("corpora/stopwords")
+        else:  # punkt_tab
+            nltk.data.find("tokenizers/punkt_tab/english")
     except LookupError:
         nltk.download(pkg, download_dir=nltk_data_dir)
+
 
 # Initialize stopwords and stemmer
 stop_words = set(stopwords.words('english'))
